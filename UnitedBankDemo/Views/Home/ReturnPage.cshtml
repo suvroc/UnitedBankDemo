@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<h2>Finalization</h2>
+
+<form method="GET" id="payment-form">
+    <div class="form-group">
+        <label for="Customer">Customer</label>
+        <input class="form-control" type="text" id="Customer" value="Demo Merchant" required>
+    </div>
+
+    <div class="form-group">
+        <label for="TransactionID">TransactionID</label>
+        <input class="form-control" type="text" id="TransactionID" value="@(ViewBag.TransactionId)" required>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="UseServerCredentials" checked>
+        <label class="form-check-label" for="UseServerCredentials">
+            Use Server Credentials
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label for="UserName">UserName</label>
+        <input class="form-control" type="text" id="UserName" value="" required disabled>
+    </div>
+
+    <div class="form-group">
+        <label for="Password">Password</label>
+        <input class="form-control" type="text" id="Password" value="" required disabled>
+    </div>
+</form>
+<button type="button" class="btn btn-primary" onclick="finalizePayment(); return false;">Finalize</button>
+
+<p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Hide response
+    </a>
+</p>
+<div class="" id="collapseExample">
+    <pre class="card card-body" id="paymentResponse">
+                
+            </pre>
+</div>
+
+<script type="text/javascript">
+
+    function finalizePayment() {
+        $.post("/finalizePayment", {
+            Customer: document.getElementById('Customer').value,
+            TransactionID: document.getElementById('TransactionID').value,
+            UserName: document.getElementById('UserName').value,
+            Password: document.getElementById('Password').value,
+            UseServerCredentials: document.getElementById('UseServerCredentials').checked
+        }, function (data) {
+            document.getElementById('paymentResponse').innerHTML = JSON.stringify(data, null, 4);
+        });
+        return false;
+    }
+</script>

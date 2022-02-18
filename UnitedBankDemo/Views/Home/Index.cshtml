@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+    <div>
+        <h2>API call</h2>
+        <form id="payment-form">
+            <div class="form-group">
+                <label for="Customer">Customer</label>
+                <input class="form-control" type="text" id="Customer" value="Demo Merchant" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Store">Store</label>
+                <input class="form-control" type="text" id="Store" value="0000">
+            </div>
+
+            <div class="form-group">
+                <label for="Terminal">Terminal</label>
+                <input class="form-control" type="text" id="Terminal" value="0000">
+            </div>
+
+            <div class="form-group">
+                <label for="Channel">Channel</label>
+                <input class="form-control" type="text" id="Channel" value="Web" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Amount">Amount</label>
+                <input class="form-control" type="text" id="Amount" value="2.00" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Currency">Currency</label>
+                <input class="form-control" type="text" id="Currency" value="AED" required>
+            </div>
+
+            <div class="form-group">
+                <label for="OrderID">OrderID</label>
+                <input class="form-control" type="text" id="OrderID" value="7210055701315195" required> @*autogenerate*@
+            </div>
+
+            <div class="form-group">
+                <label for="OrderName">OrderName</label>
+                <input class="form-control" type="text" id="OrderName" value="Paybill" required>
+            </div>
+
+            <div class="form-group">
+                <label for="OrderInfo">OrderInfo</label>
+                <input class="form-control" type="text" id="OrderInfo" value="Info">
+            </div>
+
+            <div class="form-group">
+                <label for="TransactionHint">TransactionHint</label>
+                <input class="form-control" type="text" id="TransactionHint" value="CPT:Y;VCC:Y;" required> @*what is it?*@
+            </div>
+
+            <div class="form-group">
+                <label for="ReturnPath">ReturnPath</label>
+                <input class="form-control" type="text" id="ReturnPath" value="@(ViewBag.BaseUrl + "/Home/ReturnPage")" required>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="UseServerCredentials" checked 
+                       onchange="setCredentialEdit(); return false;">
+                <label class="form-check-label" for="UseServerCredentials">
+                    Use Server Credentials
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label for="UserName">UserName</label>
+                <input class="form-control" type="text" id="UserName" value="" required disabled>
+            </div>
+
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <input class="form-control" type="text" id="Password" value="" required disabled>
+            </div>
+
+
+        </form>
+        <button type="button" class="btn btn-primary" onclick="startPayment(); return false;">Start payment by API</button>
+
+        <p>
+            <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                Hide response
+            </a>
+        </p>
+        <div class="" id="collapseExample">
+            <pre class="card card-body" id="startPaymentResponse">
+                
+            </pre>
+        </div>
+
+
+
+        <h2>Frontend call</h2>
+        <form action="www.google.pl" method="post" id="payForm">
+            <div class="form-group">
+                <label for="TransactionID">TransactionID</label>
+                <input class="form-control" type="text" name="TransactionID" id="TransactionID" value="" required>
+            </div>
+            <input class="btn btn-primary" type="submit" value="Submit" id="payButton" disabled>
+        </form>
+    </div>
+
+
+
+<script type="text/javascript">
+    function startPayment() {
+        $.post("startPayment", {
+            Customer: document.getElementById('Customer').value,
+            Store: document.getElementById('Store').value,
+            Terminal: document.getElementById('Terminal').value,
+            Channel: document.getElementById('Channel').value,
+            Amount: document.getElementById('Amount').value,
+            Currency: document.getElementById('Currency').value,
+            OrderID: document.getElementById('OrderID').value,
+            OrderName: document.getElementById('OrderName').value,
+            OrderInfo: document.getElementById('OrderInfo').value,
+            TransactionHint: document.getElementById('TransactionHint').value,
+            ReturnPath: document.getElementById('ReturnPath').value,
+            UserName: document.getElementById('UserName').value,
+            Password: document.getElementById('Password').value,
+            UseServerCredentials: document.getElementById('UseServerCredentials').checked
+        }, function (data) {
+            document.getElementById('startPaymentResponse').innerHTML = JSON.stringify(data, null, 4);
+            document.getElementById('TransactionID').value = data.Transaction.TransactionID;
+                document.getElementById('payForm').action = data.Transaction.PaymentPage;
+                document.getElementById('payButton').disabled = false;
+        });
+        return false;
+    }
+
+    function setCredentialEdit() {
+        if (document.getElementById('UseServerCredentials').checked == true) {
+            document.getElementById('UserName').disabled = true;
+            document.getElementById('Password').disabled = true;
+        } else {
+            document.getElementById('UserName').disabled = false;
+            document.getElementById('Password').disabled = false;
+        }
+    }
+</script>
